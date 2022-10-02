@@ -19,11 +19,32 @@ const apollo_server_core_1 = require("apollo-server-core");
 const schema_1 = require("@graphql-tools/schema");
 const ws_1 = require("ws");
 const ws_2 = require("graphql-ws/lib/use/ws");
+const apollo_server_core_2 = require("apollo-server-core");
 const lodash_1 = require("lodash");
+const customScalarTypes_1 = require("./customScalarTypes");
 const authentication_1 = require("./authentication");
+const floodHistory_1 = require("./floodHistory");
+const initialDef = (0, apollo_server_core_2.gql) `
+  scalar DateTime
+
+  type Query {
+    _empty: String
+  }
+
+  type Mutation {
+    _empty: String
+  }
+
+  type Subscription {
+    _empty: String
+  }
+`;
+const resolvers = {
+    DateTime: customScalarTypes_1.dateTimeScalar
+};
 const schema = (0, schema_1.makeExecutableSchema)({
-    typeDefs: [authentication_1.typeDef],
-    resolvers: (0, lodash_1.merge)(authentication_1.resolvers)
+    typeDefs: [initialDef, authentication_1.typeDef, floodHistory_1.typeDef],
+    resolvers: (0, lodash_1.merge)(resolvers, authentication_1.resolvers, floodHistory_1.resolvers)
 });
 const app = (0, express_1.default)();
 const httpServer = (0, http_1.createServer)(app);
@@ -55,8 +76,9 @@ const server = new apollo_server_express_1.ApolloServer({
         (0, apollo_server_core_1.ApolloServerPluginLandingPageLocalDefault)({ embed: true }),
     ],
 });
-server.start();
-server.applyMiddleware({ app });
+// start server
+server.start().then(() => server.applyMiddleware({ app }))
+    .catch(err => console.log("Failed to start server."));
 const PORT = 4000;
 // Now that our HTTP server is fully set up, we can listen to it.
 httpServer.listen(PORT, () => {

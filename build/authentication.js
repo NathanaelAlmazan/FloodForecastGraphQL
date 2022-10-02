@@ -17,8 +17,8 @@ const apollo_server_core_1 = require("apollo-server-core");
 const prismaClient_1 = __importDefault(require("./prismaClient"));
 exports.typeDef = (0, apollo_server_core_1.gql) `
     extend type Query {
-        account(uid: String!): Account
-        accountList(): [Account]
+        accountByUid(uid: String!): Account
+        accountList: [Account]
     }
 
     extend type Mutation {
@@ -46,7 +46,7 @@ exports.typeDef = (0, apollo_server_core_1.gql) `
 `;
 exports.resolvers = {
     Query: {
-        account: (parent, args) => __awaiter(void 0, void 0, void 0, function* () {
+        accountByUid: (parent, args) => __awaiter(void 0, void 0, void 0, function* () {
             return yield prismaClient_1.default.account.findUnique({
                 where: {
                     accountUid: args.uid
