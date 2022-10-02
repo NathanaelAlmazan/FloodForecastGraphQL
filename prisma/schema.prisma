@@ -1,0 +1,28 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  accountId     BigInt    @id @default(autoincrement())
+  accountUid    String    @db.VarChar(30) @unique
+  firstName     String    @db.VarChar(20)
+  lastName      String    @db.VarChar(20)
+  address       String    @db.VarChar(30)
+  phone         String?   @db.VarChar(10)
+  telephone     String?   @db.VarChar(10)
+}
+
+model FloodHistory {
+  recordId      BigInt    @id @default(autoincrement())
+  floodLevel    Float     
+  precipitation Float
+  timestamp     DateTime  @default(now())
+}
