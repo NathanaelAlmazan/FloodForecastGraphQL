@@ -78,7 +78,7 @@ server.start().then(() =>
   )
   .catch(err => console.log("Failed to start server."))
 
-const PORT = 4000;
+const PORT = process.env.PORT;
 // Now that our HTTP server is fully set up, we can listen to it.
 httpServer.listen(PORT, () => {
   console.log(
